@@ -1,1 +1,3 @@
-const minN = (arr, n = 1) => [...arr].sort((a, b) => a - b).slice(0, n);
+const colors = ["red", "green", "blue"];
+const randomColor = colors[Math.floor(Math.random() * colors.length)];
+console.log(randomColor);
