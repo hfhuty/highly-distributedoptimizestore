@@ -1,10 +1,24 @@
-function numSquares(n) {
-  const dp = new Array(n + 1).fill(Infinity);
-  dp[0] = 0;
-  for (let i = 1; i <= n; i++) {
-    for (let j = 1; j * j <= i; j++) {
-      dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
-    }
+function canFinish(numCourses, prerequisites) {
+  const graph = new Map();
+  const visited = new Array(numCourses).fill(0);
+  for (const [course, prerequisite] of prerequisites) {
+    if (!graph.has(course)) graph.set(course, []);
+    graph.get(course).push(prerequisite);
   }
-  return dp[n];
+  for (let i = 0; i < numCourses; i++) {
+    if (!dfs(i)) return false;
+  }
+  return true;
+  function dfs(course) {
+    if (visited[course] === 1) return false;
+    if (visited[course] === -1) return true;
+    visited[course] = 1;
+    if (graph.has(course)) {
+      for (const prerequisite of graph.get(course)) {
+        if (!dfs(prerequisite)) return false;
+      }
+    }
+    visited[course] = -1;
+    return true;
+  }
 }
