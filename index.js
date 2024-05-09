@@ -1,24 +1,34 @@
-function canFinish(numCourses, prerequisites) {
-  const graph = new Map();
-  const visited = new Array(numCourses).fill(0);
-  for (const [course, prerequisite] of prerequisites) {
-    if (!graph.has(course)) graph.set(course, []);
-    graph.get(course).push(prerequisite);
+function minWindow(s, t) {
+  const map = new Map();
+  for (const char of t) {
+    map.set(char, (map.get(char) || 0) + 1);
   }
-  for (let i = 0; i < numCourses; i++) {
-    if (!dfs(i)) return false;
-  }
-  return true;
-  function dfs(course) {
-    if (visited[course] === 1) return false;
-    if (visited[course] === -1) return true;
-    visited[course] = 1;
-    if (graph.has(course)) {
-      for (const prerequisite of graph.get(course)) {
-        if (!dfs(prerequisite)) return false;
-      }
+  let required = map.size;
+  let left = 0;
+  let right = 0;
+  let minLen = Infinity;
+  let substrStart = 0;
+  while (right < s.length) {
+    const char = s[right];
+    if (map.has(char)) {
+      map.set(char, map.get(char) - 1);
+      if (map.get(char) === 0) required--;
     }
-    visited[course] = -1;
-    return true;
+    while (required === 0) {
+      if (right - left + 1 < minLen) {
+        minLen = right - left + 1;
+        substrStart = left;
+      }
+      const leftChar = s[left];
+      if (map.has(leftChar)) {
+        map.set(leftChar, map.get(leftChar) + 1);
+        if (map.get(leftChar) > 0) required++;
+      }
+      left++;
+    }
+    right++;
   }
+  return minLen === Infinity
+    ? ""
+    : s.substring(substrStart, substrStart + minLen);
 }
